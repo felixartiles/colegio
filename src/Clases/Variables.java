@@ -9,5 +9,5 @@ package Clases;
  * @author felix
  */
 public class Variables {
-    
+    public static String URL = "";
 }
