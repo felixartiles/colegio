@@ -35,6 +35,7 @@ public class Funciones {
     public static String[] dato = new String[5];
     private static PreparedStatement ps;
     
+   
     public static void guardar_datos(String sql){
         
             try {
@@ -43,10 +44,7 @@ public class Funciones {
                 Statement st = Conexion.GetConexion().createStatement();
               
                st.executeUpdate(sql);
-             
-               
-               // ps = cn.prepareStatement(sql);
-               
+                      
                    
               
                 JOptionPane.showMessageDialog(null, "Se ha guardado correctamente.", "Registro", JOptionPane.INFORMATION_MESSAGE);

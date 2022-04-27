@@ -17,6 +17,7 @@ public class reg_usuarios extends javax.swing.JFrame {
      */
     public reg_usuarios() {
         initComponents();
+        setLocationRelativeTo(null);
     }
     //variables
     
