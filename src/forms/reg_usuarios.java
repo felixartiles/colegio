@@ -23,9 +23,9 @@ public class reg_usuarios extends javax.swing.JFrame {
     
     //funciones
     void registrar(){
-         String usuario = null, contra = null;
-        usuario = txt_usuario.getText();
-        contra = txt_contra.getText();
+        String usuario = null, contra = null;
+        usuario = txt_usuario.getText().toLowerCase();
+        contra = txt_contra.getText().toLowerCase();
         
         if (usuario.isEmpty() || contra.isEmpty()) {
             txt_usuario.requestFocus();
@@ -71,6 +71,11 @@ public class reg_usuarios extends javax.swing.JFrame {
         });
 
         jButton2.setText("Salir");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         txt_usuario.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
@@ -132,6 +137,11 @@ public class reg_usuarios extends javax.swing.JFrame {
         // TODO add your handling code here:
         registrar();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

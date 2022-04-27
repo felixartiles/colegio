@@ -31,8 +31,6 @@ public class Funciones {
     public static final Conexion cc = new Conexion();
     public static final Connection cn = Conexion.GetConexion();
     public static String sql = null;
-    public static String nombre_formulario = "";
-    public boolean empleado_usuario = false;
     public static String fecha_i, fecha_f;
     public static String[] dato = new String[5];
     private static PreparedStatement ps;
@@ -47,8 +45,8 @@ public class Funciones {
                st.executeUpdate(sql);
              
                
-                ps = cn.prepareStatement(sql);
-                ResultSet rs =ps.executeQuery();
+               // ps = cn.prepareStatement(sql);
+               
                    
               
                 JOptionPane.showMessageDialog(null, "Se ha guardado correctamente.", "Registro", JOptionPane.INFORMATION_MESSAGE);
