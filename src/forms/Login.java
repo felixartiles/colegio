@@ -161,7 +161,8 @@ public class Login extends javax.swing.JFrame {
            
                if(contra.equals(txt_contra.getText()) ){
                    JOptionPane.showMessageDialog(null, "Bienvenido "+usuario+"!!", "Login", JOptionPane.INFORMATION_MESSAGE);
-                   reg_usuarios form = new reg_usuarios();
+                   menu form = new menu();
+                   form.setLocationRelativeTo(null);
                    form.setVisible(true);
                    dispose();
                }else{
