@@ -121,7 +121,7 @@ public class Funciones {
         });
     }
 
-    public static String fecha() {
+    public static String fecha_actual() {
         Date fecha = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
 
