@@ -5,8 +5,12 @@
 package forms;
 
 import Clases.Funciones;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,6 +24,7 @@ public class menu extends javax.swing.JFrame {
     public menu() {
         initComponents();
         combos();
+        
         
     }
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
@@ -50,7 +55,40 @@ public class menu extends javax.swing.JFrame {
         Funciones.llenar_combo(combo_telefono, "tipo_telefono", "descripcion");
         Funciones.llenar_combo(combo_telefono2, "tipo_telefono", "descripcion");
     }
-    
+    private void llenarTabla(){
+        {
+
+        DefaultTableModel modelo = (DefaultTableModel) this.tabla.getModel();
+        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        while (modelo.getRowCount() > 0) {
+            modelo.removeRow(0);
+        }
+        modelo.setColumnIdentifiers(new Object[]{
+            "Codigo estudiante", "Nombre", "Apellido","fecha nacimiento",
+                "tutor #1","tutor #2","telefono",
+        });
+
+        String sql = "select * from usuario";
+
+        ResultSet rs = Funciones.consulta(sql);
+        int cont = 1;
+        try {
+            while (rs.next()) {
+                // agrega los datos de la consulta al modelo de la tabla
+                modelo.addRow(new Object[]{
+                    cont,
+                    rs.getString("nickname"),
+                    rs.getString("password"),
+                    
+                });
+                cont++;
+            }
+            tabla.setModel(modelo);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e, "llenar tabla", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -107,6 +145,10 @@ public class menu extends javax.swing.JFrame {
         combo_telefono2 = new javax.swing.JComboBox<>();
         jLabel17 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabla = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
         jTabbedPane4 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -161,6 +203,12 @@ public class menu extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Usuarios", jPanel1);
+
+        jTabbedPane2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane2MouseClicked(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel2.setText("Registro de estudiantes");
@@ -450,18 +498,59 @@ public class menu extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Registrar", jPanel3);
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel3.setText("Consulta de estudiantes");
+
+        tabla.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "codpro", "nombre", "precio", "cantidad", "Unidad", "Codigo Uni"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabla.setDoubleBuffered(true);
+        jScrollPane1.setViewportView(tabla);
+
+        jButton2.setText("Salir");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 703, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap(207, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addGap(162, 162, 162)
+                .addComponent(jButton2)
+                .addContainerGap())
+            .addComponent(jScrollPane1)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 434, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jTabbedPane2.addTab("reporte", jPanel4);
+        jTabbedPane2.addTab("consultar", jPanel4);
 
         jTabbedPane1.addTab("Estudiantes", jTabbedPane2);
 
@@ -520,7 +609,7 @@ public class menu extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(292, 292, 292)
@@ -550,47 +639,23 @@ public class menu extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_SalirActionPerformed
 
-    private void buscar_usuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscar_usuActionPerformed
+    private void jTabbedPane2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane2MouseClicked
         // TODO add your handling code here:
-        Consultas.buscar_usuario form = new Consultas.buscar_usuario();
-        form.setVisible(true);
-    }//GEN-LAST:event_buscar_usuActionPerformed
+        llenarTabla();
+    }//GEN-LAST:event_jTabbedPane2MouseClicked
 
-    private void reg_usuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reg_usuActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        reg_usuarios form = new reg_usuarios();
-        form.setVisible(true);
-    }//GEN-LAST:event_reg_usuActionPerformed
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
+    private void combo_telefono2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_telefono2ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null, combo_curso_actual.getSelectedItem().toString());
-        guardar();
-    }//GEN-LAST:event_btn_guardarActionPerformed
+    }//GEN-LAST:event_combo_telefono2ActionPerformed
 
-    private void combo_curso_actualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_curso_actualActionPerformed
+    private void txt_telefono2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_telefono2KeyTyped
         // TODO add your handling code here:
-    }//GEN-LAST:event_combo_curso_actualActionPerformed
-
-    private void documento_tutor_2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_documento_tutor_2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_documento_tutor_2ActionPerformed
-
-    private void documento_tutor_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_documento_tutor_1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_documento_tutor_1ActionPerformed
-
-    private void combo_telefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_telefonoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_combo_telefonoActionPerformed
-
-    private void combo_relacion_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_relacion_1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_combo_relacion_1ActionPerformed
-
-    private void combo_relacion_2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_relacion_2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_combo_relacion_2ActionPerformed
+    }//GEN-LAST:event_txt_telefono2KeyTyped
 
     private void btn_limpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_limpiarActionPerformed
         // TODO add your handling code here:
@@ -606,43 +671,77 @@ public class menu extends javax.swing.JFrame {
         txt_telefono2.setText("");
     }//GEN-LAST:event_btn_limpiarActionPerformed
 
-    private void txt_documento_1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_documento_1KeyTyped
+    private void combo_relacion_2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_relacion_2ActionPerformed
         // TODO add your handling code here:
-        char c = evt.getKeyChar();
-        
-        if(!Character.isDigit(c) || txt_documento_1.getText().length() >= 11){
-            evt.consume();
-          
-        }
-    }//GEN-LAST:event_txt_documento_1KeyTyped
+    }//GEN-LAST:event_combo_relacion_2ActionPerformed
 
-    private void txt_documento_2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_documento_2KeyTyped
+    private void combo_relacion_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_relacion_1ActionPerformed
         // TODO add your handling code here:
-         char c = evt.getKeyChar();
-        
-        if(!Character.isDigit(c) || txt_documento_2.getText().length() >= 11){
-            evt.consume();
-          
-        }
-    }//GEN-LAST:event_txt_documento_2KeyTyped
+    }//GEN-LAST:event_combo_relacion_1ActionPerformed
+
+    private void combo_telefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_telefonoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_combo_telefonoActionPerformed
 
     private void txt_telefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_telefonoKeyTyped
         // TODO add your handling code here:
-         char c = evt.getKeyChar();
-        
+        char c = evt.getKeyChar();
+
         if(!Character.isDigit(c)){
             evt.consume();
-          
+
         }
     }//GEN-LAST:event_txt_telefonoKeyTyped
 
-    private void txt_telefono2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_telefono2KeyTyped
+    private void txt_documento_2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_documento_2KeyTyped
         // TODO add your handling code here:
-    }//GEN-LAST:event_txt_telefono2KeyTyped
+        char c = evt.getKeyChar();
 
-    private void combo_telefono2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_telefono2ActionPerformed
+        if(!Character.isDigit(c) || txt_documento_2.getText().length() >= 11){
+            evt.consume();
+
+        }
+    }//GEN-LAST:event_txt_documento_2KeyTyped
+
+    private void documento_tutor_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_documento_tutor_1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_combo_telefono2ActionPerformed
+    }//GEN-LAST:event_documento_tutor_1ActionPerformed
+
+    private void documento_tutor_2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_documento_tutor_2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_documento_tutor_2ActionPerformed
+
+    private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, combo_curso_actual.getSelectedItem().toString());
+        guardar();
+    }//GEN-LAST:event_btn_guardarActionPerformed
+
+    private void combo_curso_actualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combo_curso_actualActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_combo_curso_actualActionPerformed
+
+    private void txt_documento_1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_documento_1KeyTyped
+        // TODO add your handling code here:
+        char c = evt.getKeyChar();
+
+        if(!Character.isDigit(c) || txt_documento_1.getText().length() >= 11){
+            evt.consume();
+
+        }
+    }//GEN-LAST:event_txt_documento_1KeyTyped
+
+    private void buscar_usuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscar_usuActionPerformed
+        // TODO add your handling code here:
+        Consultas.buscar_usuario form = new Consultas.buscar_usuario();
+        form.setVisible(true);
+    }//GEN-LAST:event_buscar_usuActionPerformed
+
+    private void reg_usuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reg_usuActionPerformed
+        // TODO add your handling code here:
+        reg_usuarios form = new reg_usuarios();
+        form.setVisible(true);
+    }//GEN-LAST:event_reg_usuActionPerformed
 
     /**
      * @param args the command line arguments
@@ -694,6 +793,7 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> documento_tutor_2;
     private com.toedter.calendar.JDateChooser fecha;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -704,6 +804,7 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -717,10 +818,12 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane4;
     private javax.swing.JButton reg_usu;
+    private javax.swing.JTable tabla;
     private javax.swing.JTextField txt_ap2_tutor2;
     private javax.swing.JTextField txt_ape_tutor1;
     private javax.swing.JTextField txt_apellido_estu;
